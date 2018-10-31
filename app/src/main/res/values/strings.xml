@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Objects Recognition</string>
+
+    <string name="search">Search</string>
+    <string name="save">Save</string>
+
+    <string name="scan_object_first">Please scan an Object first</string>
+</resources>
