@@ -5,5 +5,7 @@
     <color name="colorAccent">#e254ff</color>
 
     <color name="backgroundColor">#F3E5F5</color>
+    <color name="searchViewColor">#fef9ff</color>
     <color name="secondaryTextColor">#424242</color>
+    <color name="widgetBackgroundColor">#55F3E5F5</color>
 </resources>

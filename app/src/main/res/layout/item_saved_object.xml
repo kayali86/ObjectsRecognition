@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white"
+    android:layout_marginStart="@dimen/normal_margin"
+    android:layout_marginTop="@dimen/small_margin"
+    android:layout_marginEnd="@dimen/normal_margin"
+    android:layout_marginBottom="@dimen/small_margin"
+    android:elevation="@dimen/small_elevation"
+     android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_saved_object_image"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:elevation="@dimen/small_elevation"
+        android:background="@drawable/ic_delete_purple_a700_36dp"
+        android:id="@+id/iv_delete_saved_object"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        app:layout_constraintBottom_toTopOf="@+id/tv_word_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_word"
+        app:layout_constraintTop_toBottomOf="@+id/tv_translation_label" />
+
+    <TextView
+        android:paddingStart="@dimen/normal_margin"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:id="@+id/tv_word_label"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:text="EN:"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_saved_object_image" />
+
+    <TextView
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingEnd="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:id="@+id/tv_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/tv_translation_label"
+        app:layout_constraintTop_toBottomOf="@+id/iv_saved_object_image" />
+
+    <TextView
+        android:paddingStart="@dimen/normal_margin"
+        android:paddingEnd="@dimen/small_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:id="@+id/tv_translation_label"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:text="FR:"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_word" />
+
+    <TextView
+        android:paddingEnd="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:id="@+id/tv_translation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/tv_word_label"
+        app:layout_constraintTop_toBottomOf="@+id/tv_word_label" />
+
+</android.support.constraint.ConstraintLayout>

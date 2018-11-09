@@ -1,8 +1,17 @@
 <resources>
     <string name="app_name">Objects Recognition</string>
 
+    <string name="search_activity_title">Search Result</string>
+    <string name="saved_objects_activity_title">Saved objects</string>
+
     <string name="search">Search</string>
     <string name="save">Save</string>
+    <string name="saved_objects_list">List</string>
+    <string name="delete_all">Delete all</string>
+
+    <string name="delete_saved_object">Delete</string>
 
     <string name="scan_object_first">Please scan an Object first</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

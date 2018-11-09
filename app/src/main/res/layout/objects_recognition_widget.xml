@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/widgetBackgroundColor">
+
+    <RelativeLayout
+        android:id="@+id/widget_label_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/small_elevation">
+
+        <TextView
+            android:id="@+id/tv_word_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/small_margin"
+            android:text="Word"
+            android:textColor="@color/backgroundColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_translation_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/small_margin"
+            android:text="Translation"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/backgroundColor"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_widget_saved_objects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/widget_label_layout"
+        android:background="@color/widgetBackgroundColor" />
+
+</RelativeLayout>

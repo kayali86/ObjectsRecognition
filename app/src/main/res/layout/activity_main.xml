@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <com.wonderkiln.camerakit.CameraView
         android:id="@+id/camera_view"
@@ -29,7 +29,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/snackbar_layout"
         app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
@@ -106,4 +106,12 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
             app:pressedTranslationZ="12dp" />
     </FrameLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/snackbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

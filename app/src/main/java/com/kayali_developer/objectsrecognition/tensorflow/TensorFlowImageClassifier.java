@@ -1,4 +1,4 @@
-package com.kayali_developer.objectsrecognition;
+package com.kayali_developer.objectsrecognition.tensorflow;
 
 import android.annotation.SuppressLint;
 import android.content.res.AssetFileDescriptor;
@@ -20,10 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/**
- * Created by amitshekhar on 17/03/18.
- */
-
 public class TensorFlowImageClassifier implements Classifier {
 
     private static final int MAX_RESULTS = 3;
@@ -39,7 +35,7 @@ public class TensorFlowImageClassifier implements Classifier {
 
     }
 
-    static Classifier create(AssetManager assetManager,
+    public static Classifier create(AssetManager assetManager,
                              String modelPath,
                              String labelPath,
                              int inputSize) throws IOException {

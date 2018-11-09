@@ -1,4 +1,4 @@
-package com.kayali_developer.objectsrecognition;
+package com.kayali_developer.objectsrecognition.tensorflow;
 
 import android.graphics.Bitmap;
 

@@ -5,15 +5,20 @@
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_white_36dp"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/search"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_save"
         android:icon="@drawable/ic_save_white_36dp"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/save"
         app:showAsAction="ifRoom" />
-
+    <item
+        android:id="@+id/action_saved_objects_list"
+        android:icon="@drawable/ic_view_list_white_36dp"
+        android:orderInCategory="1"
+        android:title="@string/saved_objects_list"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -1,12 +1,14 @@
 package com.kayali_developer.googlecustomsearchlibrary;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -17,6 +19,28 @@ import com.squareup.picasso.Picasso;
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ResultViewHolder> {
 
     private SearchResponse mSearchResult;
+    private final ItemAdapterOnClickHandler mClickHandler;
+    private String viewColor = null;
+    private String titleColor = null;
+    private String linkColor = null;
+    private String descriptionColor = null;
+
+    public interface ItemAdapterOnClickHandler {
+        void onClick(SearchResponse.Item currentItem);
+    }
+
+    public SearchResultAdapter(ItemAdapterOnClickHandler mClickHandler) {
+        this.mClickHandler = mClickHandler;
+    }
+
+    public SearchResultAdapter(ItemAdapterOnClickHandler mClickHandler, String viewColor, String titleColor, String linkColor, String descriptionColor) {
+        this.mClickHandler = mClickHandler;
+        this.viewColor = viewColor;
+        this.titleColor = titleColor;
+        this.linkColor = linkColor;
+        this.descriptionColor = descriptionColor;
+    }
+
 
     public void setSearchResultData(SearchResponse searchResponse) {
         mSearchResult = searchResponse;
@@ -38,6 +62,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     @Override
     public void onBindViewHolder(@NonNull ResultViewHolder resultViewHolder, int i) {
         SearchResponse.Item currentItem = mSearchResult.getItems().get(i);
+        if (viewColor != null && titleColor != null && linkColor != null && descriptionColor != null){
+            resultViewHolder.item_layout.setBackgroundColor(Color.parseColor(viewColor));
+            resultViewHolder.tv_title.setTextColor(Color.parseColor(titleColor));
+            resultViewHolder.tv_link.setTextColor(Color.parseColor(linkColor));
+            resultViewHolder.tv_description.setTextColor(Color.parseColor(descriptionColor));
+        }
         resultViewHolder.tv_title.setText(currentItem.getTitle());
         resultViewHolder.tv_link.setText(currentItem.getDisplayLink());
         resultViewHolder.tv_description.setText(currentItem.getSnippet());
@@ -62,7 +92,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         return mSearchResult.getItems().size();
     }
 
-    class ResultViewHolder extends RecyclerView.ViewHolder {
+    class ResultViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        LinearLayout item_layout;
         TextView tv_title;
         TextView tv_link;
         TextView tv_description;
@@ -70,10 +101,19 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         ResultViewHolder(@NonNull View itemView) {
             super(itemView);
+            item_layout = itemView.findViewById(R.id.item_layout);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_link = itemView.findViewById(R.id.tv_link);
             tv_description = itemView.findViewById(R.id.tv_description);
             iv_image = itemView.findViewById(R.id.iv_image);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            SearchResponse.Item currentItem = mSearchResult.getItems().get(adapterPosition);
+            mClickHandler.onClick(currentItem);
         }
     }
 }

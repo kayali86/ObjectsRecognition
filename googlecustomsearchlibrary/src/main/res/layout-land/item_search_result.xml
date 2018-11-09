@@ -6,7 +6,7 @@
     android:layout_marginTop="@dimen/small_margin"
     android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/small_margin"
-    android:background="#ffffff"
+    android:background="@color/item_background_color"
     android:elevation="4dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"

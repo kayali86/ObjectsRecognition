@@ -1,5 +1,8 @@
 package com.kayali_developer.googlecustomsearchlibrary;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +25,10 @@ import retrofit2.Response;
 public class SearchResultFragment extends Fragment {
     private SearchResultAdapter mSearchResultAdapter;
     private RecyclerView rv_search_result;
+    private String viewColor = null;
+    private String titleColor = null;
+    private String linkColor = null;
+    private String descriptionColor = null;
 
     @Nullable
     @Override
@@ -32,15 +39,28 @@ public class SearchResultFragment extends Fragment {
                 = new LinearLayoutManager(getContext());
         rv_search_result.setLayoutManager(layoutManager);
         rv_search_result.setHasFixedSize(true);
-        String googleSearchApiKey;
-        String cx;
-        String searchWord;
+        String googleSearchApiKey = null;
+        String cx = null;
+        String searchWord = null;
+        String backgroundColor;
 
         if (getArguments() != null){
-            googleSearchApiKey = getArguments().getString(GoogleCustomSearchLibraryConstants.GOOGLE_CUSTOM_SEARCH_API_KEY);
-            cx = getArguments().getString(GoogleCustomSearchLibraryConstants.CX_KEY);
-            searchWord = getArguments().getString(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY);
-            loadSearchResult(googleSearchApiKey, cx, searchWord, rootView);
+            try {
+                backgroundColor = getArguments().getString(GoogleCustomSearchLibraryConstants.BACKGROUND_COLOR_KEY);
+                viewColor = getArguments().getString(GoogleCustomSearchLibraryConstants.VIEW_COLOR_KEY);
+                titleColor = getArguments().getString(GoogleCustomSearchLibraryConstants.TITLE_COLOR_KEY);
+                linkColor = getArguments().getString(GoogleCustomSearchLibraryConstants.LINK_COLOR_KEY);
+                descriptionColor = getArguments().getString(GoogleCustomSearchLibraryConstants.DESCRIPTION_COLOR_KEY);
+                googleSearchApiKey = getArguments().getString(GoogleCustomSearchLibraryConstants.GOOGLE_CUSTOM_SEARCH_API_KEY);
+                cx = getArguments().getString(GoogleCustomSearchLibraryConstants.CX_KEY);
+                searchWord = getArguments().getString(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY);
+                rootView.setBackgroundColor(Color.parseColor(backgroundColor));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (googleSearchApiKey != null && cx != null && searchWord != null){
+                loadSearchResult(googleSearchApiKey, cx, searchWord, rootView);
+            }
         }
         return rootView;
     }
@@ -52,7 +72,7 @@ public class SearchResultFragment extends Fragment {
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 if (response.isSuccessful()) {
                     SearchResponse searchResponse = response.body();
-                    mSearchResultAdapter = new SearchResultAdapter();
+                    mSearchResultAdapter = new SearchResultAdapter(itemAdapterOnClickHandler, viewColor, titleColor, linkColor, descriptionColor);
                     mSearchResultAdapter.setSearchResultData(searchResponse);
                     rv_search_result.setAdapter(mSearchResultAdapter);
                     Log.w("SearchResultActivity", ">>>>>>>>>>>>>>>>>>>>>>>>posts loaded from API" + searchResponse.toString());
@@ -70,4 +90,16 @@ public class SearchResultFragment extends Fragment {
             }
         });
     }
+
+    private SearchResultAdapter.ItemAdapterOnClickHandler itemAdapterOnClickHandler = new SearchResultAdapter.ItemAdapterOnClickHandler() {
+        @Override
+        public void onClick(SearchResponse.Item currentItem) {
+            String url = currentItem.getLink();
+            Intent webIntent = new Intent(Intent.ACTION_VIEW);
+            webIntent.setData(Uri.parse(url));
+            if (getActivity().getPackageManager() != null && webIntent.resolveActivity(getActivity().getPackageManager()) != null){
+                startActivity(webIntent);
+            }
+        }
+    };
 }
