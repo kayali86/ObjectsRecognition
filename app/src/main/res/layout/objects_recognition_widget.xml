@@ -7,30 +7,19 @@
         android:id="@+id/widget_label_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:elevation="@dimen/small_elevation">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/tv_word_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:padding="@dimen/small_margin"
-            android:text="Word"
-            android:textColor="@color/backgroundColor"
-            android:textStyle="bold" />
+            style="@style/widget_label_style"
+            android:text="@string/word" />
 
         <TextView
             android:id="@+id/tv_translation_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/widget_label_style"
             android:layout_alignParentEnd="true"
-            android:background="@color/colorPrimary"
-            android:padding="@dimen/small_margin"
-            android:text="Translation"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/backgroundColor"
-            android:textStyle="bold" />
+            android:text="@string/translation"
+            android:textAlignment="viewEnd" />
     </RelativeLayout>
 
     <ListView

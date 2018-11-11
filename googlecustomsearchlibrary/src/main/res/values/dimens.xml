@@ -7,4 +7,11 @@
     <dimen name="small_elevation">4dp</dimen>
     <dimen name="normal_elevation">6dp</dimen>
     <dimen name="large_elevation">8dp</dimen>
+
+    <dimen name="loading_indicator_size">128dp</dimen>
+    <dimen name="image_height">192dp</dimen>
+    <dimen name="image_height_land">128dp</dimen>
+
+    <dimen name="empty_view_text_size">24sp</dimen>
+    <dimen name="title_size">18sp</dimen>
 </resources>

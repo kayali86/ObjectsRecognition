@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="searchResultImageStyle">
+        <item name="android:contentDescription">@string/search_result_image_description</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/image_height</item>
+        <item name="android:layout_marginBottom">@dimen/normal_margin</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="searchResultImageStyleLand">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/image_height_land</item>
+        <item name="android:layout_marginEnd">@dimen/normal_margin</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:contentDescription">@string/search_result_image_description</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="searchResultTitleStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:shadowColor">@color/shadowColor</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:textSize">@dimen/title_size</item>
+    </style>
+
+    <style name="searchResultTitleStyleLand">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:textSize">@dimen/title_size</item>
+    </style>
+
+    <style name="searchResultLinkStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="searchResultLinkStyleLand">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="searchResultEmptyViewStyle">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableTop">@drawable/no_data</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textSize">@dimen/empty_view_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

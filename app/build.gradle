@@ -48,6 +48,5 @@ dependencies {
 
     implementation project(':onlinetranslationlibrary')
     implementation project(':googlecustomsearchlibrary')
-    implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.google.android.gms:play-services-analytics:16.0.5'
 }

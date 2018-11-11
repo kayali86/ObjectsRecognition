@@ -497,7 +497,7 @@ public class SearchResponse {
                 @SerializedName("format-detection")
                 private String formatdetection;
                 @SerializedName("msvalidate.01")
-                private String _$Msvalidate0121; // FIXME check this code
+                private String _$Msvalidate0121;
 
                 public String getViewport() {
                     return viewport;

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_margin">16dp</dimen>
+    <dimen name="normal_margin">24dp</dimen>
+    <dimen name="large_margin">64dp</dimen>
+
+    <dimen name="small_elevation">6dp</dimen>
+    <dimen name="normal_elevation">8dp</dimen>
+    <dimen name="large_elevation">12dp</dimen>
+    <dimen name="floating_button_elevation">16dp</dimen>
+
+    <dimen name="thumbnail_size">128dp</dimen>
+    <dimen name="thumbnail_width_land">256dp</dimen>
+    <dimen name="thumbnail_height_land">208dp</dimen>
+    <dimen name="language_label_view_size">32dp</dimen>
+    <dimen name="language_label_view_size_details">64dp</dimen>
+
+    <dimen name="object_image_height">240dp</dimen>
+    <dimen name="object_image_height_land">192dp</dimen>
+
+    <dimen name="activity_title_text_size">28sp</dimen>
+    <dimen name="word_translation_text_size">20sp</dimen>
+    <dimen name="empty_view_text_size">28sp</dimen>
+
+    <dimen name="widget_margin">8dp</dimen>
+
+    <dimen name="action_bar_height">128dp</dimen>
+</resources>

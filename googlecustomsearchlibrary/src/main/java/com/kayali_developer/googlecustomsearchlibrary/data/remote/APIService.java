@@ -12,5 +12,4 @@ public interface APIService {
             (@Query("key") String GOOGLE_SEARCH_API_KEY,
              @Query("cx") String CX,
              @Query("q") String searchWord);
-
 }

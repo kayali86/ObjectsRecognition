@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/normal_margin"
@@ -7,37 +8,27 @@
     android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/small_margin"
     android:background="@color/item_background_color"
-    android:elevation="4dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="@dimen/normal_margin">
 
     <ImageView
-        android:layout_marginEnd="@dimen/normal_margin"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        android:scaleType="fitXY"
-        android:id="@+id/iv_image"/>
+        android:id="@+id/iv_image"
+        style="@style/searchResultImageStyleLand" />
 
     <LinearLayout
-        android:layout_weight="3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="3"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:textSize="18sp" />
+            style="@style/searchResultTitleStyleLand" />
 
         <TextView
             android:id="@+id/tv_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp" />
+            style="@style/searchResultLinkStyleLand" />
 
         <TextView
             android:id="@+id/tv_description"

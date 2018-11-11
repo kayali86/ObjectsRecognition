@@ -8,38 +8,23 @@
     android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/small_margin"
     android:background="@color/item_background_color"
-    android:elevation="4dp"
     android:orientation="vertical"
     android:padding="@dimen/normal_margin">
 
     <ImageView
-        android:layout_marginBottom="@dimen/normal_margin"
+        android:id="@+id/iv_image"
+        style="@style/searchResultImageStyle" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/searchResultTitleStyle" />
+
+    <TextView
+        android:id="@+id/tv_link"
+        style="@style/searchResultLinkStyle" />
+
+    <TextView
+        android:id="@+id/tv_description"
         android:layout_width="match_parent"
-        android:layout_height="192dp"
-        android:scaleType="fitXY"
-        android:id="@+id/iv_image"/>
-
-
-        <TextView
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
-            android:shadowColor="@color/shadowColor"
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tv_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp" />
-
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content" />
 </LinearLayout>

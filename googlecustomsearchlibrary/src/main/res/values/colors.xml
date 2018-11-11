@@ -2,4 +2,5 @@
 <resources>
     <color name="shadowColor">#424242</color>
     <color name="item_background_color">#ffffff</color>
+    <color name="loading_indicator_color">#d50000</color>
 </resources>

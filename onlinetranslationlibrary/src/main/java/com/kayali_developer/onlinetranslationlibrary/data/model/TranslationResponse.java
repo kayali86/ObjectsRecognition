@@ -8,9 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TranslationResponse implements Parcelable
-{
-
+public class TranslationResponse implements Parcelable {
     @SerializedName("code")
     @Expose
     private Integer code;
@@ -21,7 +19,6 @@ public class TranslationResponse implements Parcelable
     @Expose
     private List<String> text = null;
     public final static Parcelable.Creator<TranslationResponse> CREATOR = new Creator<TranslationResponse>() {
-
 
         @SuppressWarnings({
                 "unchecked"
@@ -34,10 +31,9 @@ public class TranslationResponse implements Parcelable
             return (new TranslationResponse[size]);
         }
 
-    }
-            ;
+    };
 
-    protected TranslationResponse(Parcel in) {
+    private TranslationResponse(Parcel in) {
         this.code = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.lang = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.text, (java.lang.String.class.getClassLoader()));
@@ -79,5 +75,4 @@ public class TranslationResponse implements Parcelable
     public int describeContents() {
         return 0;
     }
-
 }

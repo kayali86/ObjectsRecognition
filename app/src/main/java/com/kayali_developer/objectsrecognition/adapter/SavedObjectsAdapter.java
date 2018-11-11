@@ -41,11 +41,29 @@ public class SavedObjectsAdapter extends RecyclerView.Adapter<SavedObjectsAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SavedObjectsAdapterViewHolder savedObjectsAdapterViewHolder, int i) {
-        Object currentObject = mSavedObjects.get(i);
+    public void onBindViewHolder(@NonNull final SavedObjectsAdapterViewHolder savedObjectsAdapterViewHolder, int i) {
+        final int adapterPosition = savedObjectsAdapterViewHolder.getAdapterPosition();
+        Object currentObject = mSavedObjects.get(adapterPosition);
         savedObjectsAdapterViewHolder.iv_saved_object_image.setImageBitmap(ImageUtils.getByteArrayAsBitmap(currentObject.getImage()));
         savedObjectsAdapterViewHolder.tv_word.setText(currentObject.getWord());
         savedObjectsAdapterViewHolder.tv_translation.setText(currentObject.getTranslation());
+
+        savedObjectsAdapterViewHolder.iv_delete_saved_object.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object currentObject = mSavedObjects.get(adapterPosition);
+                mSavedObjectsClickHandler.deleteObjectClicked(currentObject.getId());
+            }
+        });
+
+        savedObjectsAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int adapterPosition = savedObjectsAdapterViewHolder.getAdapterPosition();
+                Object currentObject = mSavedObjects.get(adapterPosition);
+                mSavedObjectsClickHandler.searchObject(currentObject.getTranslation());
+            }
+        });
     }
 
     @Override
@@ -75,15 +93,15 @@ public class SavedObjectsAdapter extends RecyclerView.Adapter<SavedObjectsAdapte
 
 
     public void clearAdapter() {
-        mSavedObjects.clear();
-        notifyDataSetChanged();
-
+        if (mSavedObjects != null) {
+            mSavedObjects.clear();
+            notifyDataSetChanged();
+        }
     }
 
     public Object getObject(int position) {
         return mSavedObjects.get(position);
     }
-
 
     class SavedObjectsAdapterViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_saved_object_image;
@@ -91,29 +109,13 @@ public class SavedObjectsAdapter extends RecyclerView.Adapter<SavedObjectsAdapte
         TextView tv_translation;
         ImageView iv_delete_saved_object;
 
-        public SavedObjectsAdapterViewHolder(@NonNull View itemView) {
+        SavedObjectsAdapterViewHolder(@NonNull final View itemView) {
             super(itemView);
             iv_saved_object_image = itemView.findViewById(R.id.iv_saved_object_image);
             tv_word = itemView.findViewById(R.id.tv_word);
             tv_translation = itemView.findViewById(R.id.tv_translation);
             iv_delete_saved_object = itemView.findViewById(R.id.iv_delete_saved_object);
-            iv_delete_saved_object.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int adapterPosition = getAdapterPosition();
-                    Object currentObject = mSavedObjects.get(adapterPosition);
-                    mSavedObjectsClickHandler.deleteObjectClicked(currentObject.getId());
-                }
-            });
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int adapterPosition = getAdapterPosition();
-                    Object currentObject = mSavedObjects.get(adapterPosition);
-                    mSavedObjectsClickHandler.searchObject(currentObject.getTranslation());
-                }
-            });
-        }
 
+        }
     }
 }

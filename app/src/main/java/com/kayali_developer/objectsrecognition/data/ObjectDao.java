@@ -14,9 +14,6 @@ public interface ObjectDao {
     @Query("SELECT * FROM objects")
     List<Object> loadAllObjects();
 
-    @Query("SELECT CASE WHEN EXISTS (SELECT * FROM objects WHERE word = :word) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END")
-    boolean isExist(String word);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertObject(Object object);
 

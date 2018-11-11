@@ -7,12 +7,9 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "objects")
 public class Object {
-
     @PrimaryKey(autoGenerate = true)
     private long id;
-
     private String word;
-
     private String translation;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)

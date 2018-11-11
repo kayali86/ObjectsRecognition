@@ -3,9 +3,12 @@
     <color name="colorPrimary">#aa00ff</color>
     <color name="colorPrimaryDark">#7200ca</color>
     <color name="colorAccent">#e254ff</color>
-
     <color name="backgroundColor">#F3E5F5</color>
     <color name="searchViewColor">#fef9ff</color>
     <color name="secondaryTextColor">#424242</color>
     <color name="widgetBackgroundColor">#55F3E5F5</color>
+    <color name="empty_view_messageColor">#890007</color>
+    <color name="thumbnailPrimary">#55aa00ff</color>
+    <color name="thumbnailDark">#557200ca</color>
+    <color name="shadowColor">#80000000</color>
 </resources>

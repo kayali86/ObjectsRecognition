@@ -1,6 +1,7 @@
 package com.kayali_developer.objectsrecognition.tensorflow;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface Classifier {
 
         private final Float confidence;
 
-        public Recognition(
+        Recognition(
                 final String id, final String title, final Float confidence) {
             this.id = id;
             this.title = title;
@@ -27,11 +28,12 @@ public interface Classifier {
             return title;
         }
 
-        public Float getConfidence() {
+        Float getConfidence() {
             return confidence;
         }
 
         @Override
+        @NonNull
         public String toString() {
             String resultString = "";
             if (id != null) {

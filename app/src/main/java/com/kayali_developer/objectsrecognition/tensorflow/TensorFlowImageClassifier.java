@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class TensorFlowImageClassifier implements Classifier {
-
     private static final int MAX_RESULTS = 3;
     private static final int BATCH_SIZE = 1;
     private static final int PIXEL_SIZE = 3;
@@ -32,19 +31,16 @@ public class TensorFlowImageClassifier implements Classifier {
     private List<String> labelList;
 
     private TensorFlowImageClassifier() {
-
     }
 
     public static Classifier create(AssetManager assetManager,
-                             String modelPath,
-                             String labelPath,
-                             int inputSize) throws IOException {
-
+                                    String modelPath,
+                                    String labelPath,
+                                    int inputSize) throws IOException {
         TensorFlowImageClassifier classifier = new TensorFlowImageClassifier();
         classifier.interpreter = new Interpreter(classifier.loadModelFile(assetManager, modelPath));
         classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
         classifier.inputSize = inputSize;
-
         return classifier;
     }
 
@@ -126,8 +122,6 @@ public class TensorFlowImageClassifier implements Classifier {
         for (int i = 0; i < recognitionsSize; ++i) {
             recognitions.add(pq.poll());
         }
-
         return recognitions;
     }
-
 }

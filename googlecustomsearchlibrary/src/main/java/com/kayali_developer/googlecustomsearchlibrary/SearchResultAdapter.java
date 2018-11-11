@@ -17,7 +17,6 @@ import com.squareup.picasso.Picasso;
 
 
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ResultViewHolder> {
-
     private SearchResponse mSearchResult;
     private final ItemAdapterOnClickHandler mClickHandler;
     private String viewColor = null;
@@ -41,7 +40,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         this.descriptionColor = descriptionColor;
     }
 
-
     public void setSearchResultData(SearchResponse searchResponse) {
         mSearchResult = searchResponse;
         notifyDataSetChanged();
@@ -53,9 +51,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.item_search_result;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
         // Inflate an item view and return a new viewHolder
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new ResultViewHolder(view);
     }
 
@@ -71,11 +68,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         resultViewHolder.tv_title.setText(currentItem.getTitle());
         resultViewHolder.tv_link.setText(currentItem.getDisplayLink());
         resultViewHolder.tv_description.setText(currentItem.getSnippet());
-        String thmbnailUrl;
+        String thumbnailUrl;
         if (currentItem.getPagemap().getCse_image() != null && currentItem.getPagemap().getCse_image().size() > 0){
-            thmbnailUrl = currentItem.getPagemap().getCse_image().get(0).getSrc();
+            thumbnailUrl = currentItem.getPagemap().getCse_image().get(0).getSrc();
             Picasso.get()
-                    .load(thmbnailUrl)
+                    .load(thumbnailUrl)
                     .placeholder(R.drawable.no_image_available)
                     .error(R.drawable.error)
                     .into(resultViewHolder.iv_image);

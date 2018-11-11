@@ -13,7 +13,6 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "objects.db";
     private static AppDatabase sInstance;
 
-
     public static AppDatabase getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
@@ -27,5 +26,4 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract ObjectDao objectDao();
-
 }

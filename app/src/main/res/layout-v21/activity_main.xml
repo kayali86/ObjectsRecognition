@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    tools:context=".activity.MainActivity">
+
+    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="@dimen/small_elevation"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textColor="@color/backgroundColor"
+                android:textSize="@dimen/activity_title_text_size"
+                android:textStyle="bold" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <com.wonderkiln.camerakit.CameraView
+        android:id="@+id/camera_view"
+        style="@style/camera_view_style"
+        app:layout_constraintBottom_toTopOf="@+id/iv_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_app_bar" />
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        style="@style/thumbnail_style"
+        android:background="@drawable/thumbnail_background"
+        app:layout_constraintBottom_toTopOf="@id/snack_bar_layout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/iv_thumbnail"
+        app:layout_constraintEnd_toStartOf="@+id/detect_button_container"
+        app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail">
+
+        <TextView
+            android:id="@+id/tv_translation_label"
+            style="@style/language_label_view_style"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:text="@string/french_shortcut" />
+
+        <TextView
+            android:id="@+id/tv_translation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_toEndOf="@id/tv_translation_label"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="@dimen/word_translation_text_size" />
+
+        <TextView
+            android:id="@+id/tv_result_label"
+            style="@style/language_label_view_style"
+            android:layout_below="@+id/tv_translation"
+            android:text="@string/english_shortcut" />
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_translation"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@+id/tv_result_label"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/detect_button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_constraintBottom_toTopOf="@+id/snack_bar_layout"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_detect"
+            style="@style/floating_button_style"
+            android:src="@drawable/ic_camera_white_24dp"
+            app:elevation="@dimen/normal_elevation"
+            app:pressedTranslationZ="@dimen/floating_button_elevation" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/loading_indicator_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/shadowColor"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/large_margin"
+            android:indeterminateTint="@color/colorAccent" />
+    </FrameLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/snack_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

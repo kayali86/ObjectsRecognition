@@ -16,8 +16,6 @@ import com.kayali_developer.objectsrecognition.data.model.Object;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class ObjectsRecognitionWidget extends AppWidgetProvider {
     private static Context mContext;
     private static AppWidgetManager mAppWidgetManager;
@@ -28,36 +26,36 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.objects_recognition_widget);
+        RemoteViews views;
+        try {
+            views = new RemoteViews(context.getPackageName(), R.layout.objects_recognition_widget);
 
-        Intent intent = new Intent(context, WidgetService.class);
-        ArrayList<String> wordsList = new ArrayList<>();
-        ArrayList<String> translationsList = new ArrayList<>();
-        for (Object object : sObjects){
-            wordsList.add(object.getWord());
-            translationsList.add(object.getTranslation());
+            Intent intent = new Intent(context, WidgetService.class);
+            ArrayList<String> wordsList = new ArrayList<>();
+            ArrayList<String> translationsList = new ArrayList<>();
+            for (Object object : sObjects) {
+                wordsList.add(object.getWord());
+                translationsList.add(object.getTranslation());
+            }
+            intent.putStringArrayListExtra(AppConstants.ALL_SAVED_WORDS_KEY, wordsList);
+            intent.putStringArrayListExtra(AppConstants.ALL_SAVED_TRANSLATIONS_KEY, translationsList);
+
+            // Bind the remote adapter
+            views.setRemoteAdapter(R.id.lv_widget_saved_objects, intent);
+
+            final Intent appIntent = new Intent(context, MainActivity.class);
+            final PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_label_layout, appPendingIntent);
+
+            final Intent searchIntent = new Intent(context, SearchResultActivity.class);
+            final PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 1, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_item_layout, searchPendingIntent);
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        intent.putStringArrayListExtra(AppConstants.ALL_SAVED_WORDS_KEY, wordsList);
-        intent.putStringArrayListExtra(AppConstants.ALL_SAVED_TRANSLATIONS_KEY, translationsList);
-
-        Timber.e("sObjects: %s", sObjects.size());
-
-        // Bind the remote adapter
-        views.setRemoteAdapter(R.id.lv_widget_saved_objects, intent);
-
-
-        final Intent appIntent = new Intent(context, MainActivity.class);
-        final PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_label_layout, appPendingIntent);
-
-
-        final Intent searchIntent = new Intent(context, SearchResultActivity.class);
-        final PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 1, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_item_layout, searchPendingIntent);
-
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
@@ -69,15 +67,14 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
             mAppWidgetId = appWidgetId;
             Intent loadIntent = new Intent(context, ObjectsWidgetLoadService.class);
             context.startService(loadIntent);
-
         }
     }
 
-    public static void updateWidget(){
+    public static void updateWidget() {
         updateAppWidget(mContext, mAppWidgetManager, mAppWidgetId);
     }
 
-    public static void updateObjects(List<Object> objects){
+    public static void updateObjects(List<Object> objects) {
         sObjects = objects;
     }
 

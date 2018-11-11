@@ -6,19 +6,25 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -40,14 +46,21 @@ import butterknife.ButterKnife;
 public class SavedObjectsActivity extends AppCompatActivity implements SavedObjectsAdapter.SavedObjectsClickHandler {
     @BindView(R.id.rv_saved_objects)
     RecyclerView rvSavedObjects;
-    Snackbar mSnackbar;
-    @BindView(R.id.snackbar_layout)
-    CoordinatorLayout snackbarLayout;
-    private SavedObjectsAdapter mAdapter;
+    Snackbar mSnackBar;
+    @BindView(R.id.snack_bar_layout)
+    CoordinatorLayout snackBarLayout;
+    @BindView(R.id.saved_objects_toolbar)
+    Toolbar savedObjectsToolbar;
+    @BindView(R.id.empty_view)
+    TextView emptyView;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar pbLoadingIndicator;
 
+    private SavedObjectsAdapter mAdapter;
     private Context mContext;
     private SavedObjectsViewModel mViewModel;
     private Tracker mTracker;
+    private MenuItem mDeleteAllMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,45 +68,75 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         setContentView(R.layout.activity_saved_objects);
         ButterKnife.bind(this);
         mContext = this;
-        // Obtain the shared Tracker instance.
+        setActionBar();
         ObjectsRecognitionApplication application = (ObjectsRecognitionApplication) getApplication();
         mTracker = application.getDefaultTracker();
         mViewModel = ViewModelProviders.of(this).get(SavedObjectsViewModel.class);
-        mViewModel.savedObjectsLive.observe(this, new Observer<List<Object>>() {
-            @Override
-            public void onChanged(@Nullable List<Object> savedObjects) {
-                if (savedObjects != null && savedObjects.size() > 0) {
-                    Collections.reverse(savedObjects);
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Saved Objects count")
-                            .setValue(savedObjects.size())
-                            .build());
-                    mAdapter.setSavedObjects(savedObjects);
-                }
-            }
-        });
+        observeSavedObjects();
+        populateSavedObjects();
+        listenToSwipeToDeleteObjects();
+    }
 
-        mAdapter = new SavedObjectsAdapter(this);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this);
-        rvSavedObjects.setLayoutManager(layoutManager);
-        rvSavedObjects.setHasFixedSize(true);
-        rvSavedObjects.setAdapter(mAdapter);
-
+    private void listenToSwipeToDeleteObjects() {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
-            // Called when a user swipes left or right on a ViewHolder
             @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Here is where you'll implement swipe to delete
                 int position = viewHolder.getAdapterPosition();
                 deleteObject(mAdapter.getObject(position).getId());
             }
         }).attachToRecyclerView(rvSavedObjects);
+    }
+
+    private void populateSavedObjects() {
+        mAdapter = new SavedObjectsAdapter(this);
+        RecyclerView.LayoutManager layoutManager;
+        int orientation = getResources().getConfiguration().orientation;
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && dm.widthPixels >= 600) {
+            layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT_LAND);
+        }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || dm.widthPixels >= 600){
+            layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT);
+        } else {
+            layoutManager = new LinearLayoutManager(this);
+        }
+        rvSavedObjects.setLayoutManager(layoutManager);
+        rvSavedObjects.setHasFixedSize(true);
+        rvSavedObjects.setAdapter(mAdapter);
+    }
+
+    private void observeSavedObjects() {
+        mViewModel.savedObjectsLive.observe(this, new Observer<List<Object>>() {
+            @Override
+            public void onChanged(@Nullable List<Object> savedObjects) {
+                if (savedObjects != null && savedObjects.size() > 0) {
+                    showContentView();
+                    Collections.reverse(savedObjects);
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory(getString(R.string.saved_objects_count))
+                            .setValue(savedObjects.size())
+                            .build());
+                    mAdapter.setSavedObjects(savedObjects);
+                } else {
+                    showEmptyView(getString(R.string.no_saved_objects));
+                }
+            }
+        });
+    }
+
+    private void setActionBar() {
+        setSupportActionBar(savedObjectsToolbar);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void search(String translation) {
@@ -104,6 +147,7 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
             searchIntent.putExtra(GoogleCustomSearchLibraryConstants.CX_KEY, AppConstants.CX);
             searchIntent.putExtra(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY, translation);
             startActivity(searchIntent);
+            SavedObjectsActivity.this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_in);
         } else {
             showSnackBar(getResources().getString(R.string.scan_object_first));
         }
@@ -116,11 +160,11 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
             if (index >= 0) {
                 rvSavedObjects.removeViewAt(index);
             }
-            showSnackBar("Object deleted" + deletedObjectsCount);
+            showSnackBar(getString(R.string.object_deleted));
         }
     }
 
-    private void deleteAllObjects(){
+    private void deleteAllObjects() {
         DialogInterface.OnClickListener discardButtonClickListener =
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -128,22 +172,21 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
                         int deletedObjectsCount = mViewModel.deleteAllObjects();
                         if (deletedObjectsCount > 0) {
                             mAdapter.clearAdapter();
-                            showSnackBar("All Objects deleted" + deletedObjectsCount);
+                            showSnackBar(getString(R.string.all_objects_deleted));
                         }
                     }
                 };
-        // Show a dialog that notifies the user they have unsaved changes
         showUpdateConfirmDialog(discardButtonClickListener);
     }
 
     private void showSnackBar(String message) {
-        mSnackbar = Snackbar
-                .make(snackbarLayout, message, Snackbar.LENGTH_SHORT);
-        View sbView = mSnackbar.getView();
+        mSnackBar = Snackbar
+                .make(snackBarLayout, message, Snackbar.LENGTH_SHORT);
+        View sbView = mSnackBar.getView();
         TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
-        mSnackbar.show();
+        mSnackBar.show();
     }
 
     // Display an alert dialog
@@ -152,9 +195,9 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the positive and negative buttons_red on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage("Do you want to delete all saved Objects?");
-        builder.setPositiveButton("Delete all", updateButtonClickListener);
-        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.delete_all_objects_warning));
+        builder.setPositiveButton(getString(R.string.delete_all_btn), updateButtonClickListener);
+        builder.setNegativeButton(getString(R.string.back), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (dialog != null) {
                     dialog.dismiss();
@@ -166,6 +209,24 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         alertDialog.show();
     }
 
+    private void showEmptyView(String message) {
+        emptyView.setVisibility(View.VISIBLE);
+        rvSavedObjects.setVisibility(View.GONE);
+        emptyView.setText(message);
+        if (mDeleteAllMenuItem != null) {
+            mDeleteAllMenuItem.setVisible(false);
+        }
+        pbLoadingIndicator.setVisibility(View.GONE);
+    }
+
+    private void showContentView() {
+        emptyView.setVisibility(View.GONE);
+        rvSavedObjects.setVisibility(View.VISIBLE);
+        if (mDeleteAllMenuItem != null) {
+            mDeleteAllMenuItem.setVisible(true);
+        }
+        pbLoadingIndicator.setVisibility(View.GONE);
+    }
 
 
     @Override
@@ -181,8 +242,24 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
     @Override
     protected void onResume() {
         super.onResume();
-        mTracker.setScreenName("SavedObjectsActivity");
+        mTracker.setScreenName(getString(R.string.saved_objects_activity_title));
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mDeleteAllMenuItem = menu.findItem(R.id.action_delete_all);
+        mViewModel.savedObjectsLive.observe(this, new Observer<List<Object>>() {
+            @Override
+            public void onChanged(@Nullable List<Object> savedObjects) {
+                if (savedObjects != null && savedObjects.size() > 0) {
+                    mDeleteAllMenuItem.setVisible(true);
+                } else {
+                    mDeleteAllMenuItem.setVisible(false);
+                }
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -198,5 +275,4 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

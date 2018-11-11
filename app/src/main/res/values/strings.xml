@@ -6,12 +6,28 @@
 
     <string name="search">Search</string>
     <string name="save">Save</string>
-    <string name="saved_objects_list">List</string>
+    <string name="saved_objects_list">Saved objects list</string>
     <string name="delete_all">Delete all</string>
-
     <string name="delete_saved_object">Delete</string>
 
     <string name="scan_object_first">Please scan an Object first</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="thumbnail_description">Object Thumbnail Image</string>
+    <string name="french_shortcut">FR: </string>
+    <string name="english_shortcut">EN: </string>
+    <string name="image_description">Object Image</string>
+    <string name="delete_button_description">Delete object button</string>
+    <string name="word">Word</string>
+    <string name="translation">Translation</string>
+    <string name="object_saved">Object saved</string>
+    <string name="cannot_save_object">Cannot save Object!</string>
+    <string name="saved_objects_count">Saved Objects count</string>
+    <string name="no_saved_objects">No saved Objects</string>
+    <string name="object_deleted">Object deleted</string>
+    <string name="all_objects_deleted">All Objects deleted</string>
+    <string name="delete_all_objects_warning">Do you want to delete all saved Objects?</string>
+    <string name="delete_all_btn">Delete all</string>
+    <string name="back">Back</string>
+
 </resources>

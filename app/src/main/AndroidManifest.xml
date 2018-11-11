@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.kayali_developer.objectsrecognition">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -51,5 +50,4 @@
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
         <service android:name=".widget.ObjectsWidgetLoadService" />
     </application>
-
 </manifest>

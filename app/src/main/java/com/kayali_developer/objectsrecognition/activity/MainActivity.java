@@ -2,7 +2,6 @@ package com.kayali_developer.objectsrecognition.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +31,6 @@ import com.kayali_developer.objectsrecognition.tensorflow.Classifier;
 import com.kayali_developer.objectsrecognition.tensorflow.TensorFlowImageClassifier;
 import com.kayali_developer.objectsrecognition.utilities.ImageUtils;
 import com.kayali_developer.objectsrecognition.viewmodel.MainViewModel;
-import com.kayali_developer.onlinetranslationlibrary.Translator;
 import com.wonderkiln.camerakit.CameraKitError;
 import com.wonderkiln.camerakit.CameraKitEvent;
 import com.wonderkiln.camerakit.CameraKitEventListener;
@@ -45,13 +44,13 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Context mContext;
+    // Model path for TensorFlow recognition
     private static final String MODEL_PATH = "mobilenet_quant_v1_224.tflite";
     private static final String LABEL_PATH = "labels.txt";
+    // Image Input size for TensorFlow recognition
     private static final int INPUT_SIZE = 224;
 
     @BindView(R.id.camera_view)
@@ -70,9 +69,13 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton btnDetect;
     @BindView(R.id.detect_button_container)
     FrameLayout detectButtonContainer;
-    @BindView(R.id.snackbar_layout)
-    CoordinatorLayout snackbarLayout;
-    Snackbar mSnackbar;
+    @BindView(R.id.snack_bar_layout)
+    CoordinatorLayout snackBarLayout;
+    Snackbar mSnackBar;
+    @BindView(R.id.main_toolbar)
+    Toolbar mainToolbar;
+    @BindView(R.id.loading_indicator_container)
+    FrameLayout loadingIndicatorContainer;
 
     private Classifier classifier;
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -85,14 +88,68 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Timber.plant(new Timber.DebugTree());
-        Timber.e("onCreate");
         ButterKnife.bind(this);
-        mContext = this;
+        setActionBar();
         // Obtain the shared Tracker instance.
         ObjectsRecognitionApplication application = (ObjectsRecognitionApplication) getApplication();
         mTracker = application.getDefaultTracker();
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        observeObject();
+
+        mViewModel.translatedLive.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean translated) {
+                if (translated != null && translated) {
+                    hideLoadingIndicator();
+                }
+            }
+        });
+        listenToCamera();
+        initTensorFlowAndLoadModel();
+    }
+
+    private void listenToCamera() {
+        cameraView.addCameraKitListener(new CameraKitEventListener() {
+            @Override
+            public void onEvent(CameraKitEvent cameraKitEvent) {
+
+            }
+
+            @Override
+            public void onError(CameraKitError cameraKitError) {
+
+            }
+
+            @Override
+            public void onImage(CameraKitImage cameraKitImage) {
+
+                Bitmap image = cameraKitImage.getBitmap();
+                mViewModel.setObjectImage(ImageUtils.getBitmapAsByteArray(image));
+                Bitmap scaledImage = Bitmap.createScaledBitmap(image, INPUT_SIZE, INPUT_SIZE, false);
+                ivThumbnail.setImageBitmap(scaledImage);
+                final List<Classifier.Recognition> results = classifier.recognizeImage(scaledImage);
+                String word;
+                if (results != null && results.size() > 0) {
+                    word = results.get(0).getTitle();
+                    mViewModel.setObjectWord(word);
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Word")
+                            .setAction(word)
+                            .build());
+                    mTracker.set("Word", word);
+                } else {
+                    hideLoadingIndicator();
+                    showSnackBar("Can't recognize the Objects!");
+                }
+            }
+
+            @Override
+            public void onVideo(CameraKitVideo cameraKitVideo) {
+            }
+        });
+    }
+
+    private void observeObject() {
         mViewModel.objectLive.observe(this, new Observer<Object>() {
             @Override
             public void onChanged(@Nullable Object object) {
@@ -114,96 +171,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        cameraView.addCameraKitListener(new CameraKitEventListener() {
-            @Override
-            public void onEvent(CameraKitEvent cameraKitEvent) {
-
-            }
-
-            @Override
-            public void onError(CameraKitError cameraKitError) {
-
-            }
-
-            @Override
-            public void onImage(CameraKitImage cameraKitImage) {
-
-                Bitmap image = cameraKitImage.getBitmap();
-                mViewModel.setObjectImage(ImageUtils.getBitmapAsByteArray(image));
-
-                Bitmap scaledImage = Bitmap.createScaledBitmap(image, INPUT_SIZE, INPUT_SIZE, false);
-
-                ivThumbnail.setImageBitmap(scaledImage);
-
-                final List<Classifier.Recognition> results = classifier.recognizeImage(scaledImage);
-                String word = null;
-                if (results != null && results.size() > 0){
-                    word = results.get(0).getTitle();
-                    //String word = "Mouse";
-                    mViewModel.setObjectWord(word);
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Word")
-                            .setAction(word)
-                            .build());
-                    mTracker.set("Word", word);
-                }else{
-                    showSnackBar("Can't recognize the Objects!");
-                }
-
-
-
-                /*
-                if (mCurrentObject.getWord() != null && !TextUtils.isEmpty(mCurrentObject.getWord())) {
-                    tvResult.setText(mCurrentObject.getWord());
-                    String languagePair = "en-fr";
-                    Translator translator = new Translator();
-                    mViewModel.setObjectTranslation(translator.translate(mContext, mCurrentObject.getWord(), languagePair));
-                }
-
-                */
-
-
-                /*
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                intent.putExtra(AppConstants.SEARCH_TOPIC_KEY, results.toString());
-                if (intent.resolveActivity(getPackageManager()) != null){
-                    startActivity(intent);
-                }
-                */
-
-            }
-
-            @Override
-            public void onVideo(CameraKitVideo cameraKitVideo) {
-
-            }
-        });
-
-        btnDetect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mCurrentObject.getWord() != null && !TextUtils.isEmpty(mCurrentObject.getWord())) {
-                    tvResult.setText(mCurrentObject.getWord());
-                    String languagePair = "en-fr";
-                    Translator translator = new Translator();
-                    mViewModel.setObjectTranslation(translator.translate(mContext, mCurrentObject.getWord(), languagePair));
-                    tvTranslation.setText(mCurrentObject.getTranslation());
-                }
-
-                cameraView.captureImage();
-            }
-        });
-
-        initTensorFlowAndLoadModel();
     }
 
+    private void setActionBar() {
+        setSupportActionBar(mainToolbar);
+        try {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mTracker.setScreenName("MainActivity");
+        mTracker.setScreenName(getString(R.string.app_name));
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         cameraView.start();
     }
@@ -224,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void initTensorFlowAndLoadModel() {
         executor.execute(new Runnable() {
@@ -253,17 +234,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    private void showSnackBar(String message) {
-        mSnackbar = Snackbar
-                .make(snackbarLayout, message, Snackbar.LENGTH_SHORT);
-        View sbView = mSnackbar.getView();
-        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        textView.setTextColor(ResourcesCompat.getColor(getResources(),R.color.colorAccent, null));
-        mSnackbar.show();
+    private void showLoadingIndicator() {
+        loadingIndicatorContainer.setVisibility(View.VISIBLE);
     }
 
+    private void hideLoadingIndicator() {
+        loadingIndicatorContainer.setVisibility(View.GONE);
+    }
+
+    private void showSnackBar(String message) {
+        mSnackBar = Snackbar
+                .make(snackBarLayout, message, Snackbar.LENGTH_SHORT);
+        View sbView = mSnackBar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+        mSnackBar.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -281,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 searchIntent.putExtra(GoogleCustomSearchLibraryConstants.CX_KEY, AppConstants.CX);
                 searchIntent.putExtra(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY, mCurrentObject.getTranslation());
                 startActivity(searchIntent);
+                MainActivity.this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_in);
             } else {
                 showSnackBar(getResources().getString(R.string.scan_object_first));
             }
@@ -290,10 +278,10 @@ public class MainActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(mCurrentObject.getWord()) && !TextUtils.isEmpty(mCurrentObject.getTranslation()) && mCurrentObject.getImage() != null) {
                 long count = mViewModel.storeObject(mCurrentObject);
                 if (count > 0) {
-                    showSnackBar("Object saved");
+                    showSnackBar(getString(R.string.object_saved));
 
                 } else {
-                    showSnackBar("Cannot save Object");
+                    showSnackBar(getString(R.string.cannot_save_object));
                 }
             } else {
                 showSnackBar(getResources().getString(R.string.scan_object_first));
@@ -303,8 +291,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, SavedObjectsActivity.class);
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
+                MainActivity.this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_in);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.btn_detect)
+    public void onViewClicked() {
+        showLoadingIndicator();
+        if (mCurrentObject.getWord() != null && !TextUtils.isEmpty(mCurrentObject.getWord())) {
+            tvResult.setText(mCurrentObject.getWord());
+            mViewModel.translate(mCurrentObject.getWord());
+            tvTranslation.setText(mCurrentObject.getTranslation());
+        }
+        cameraView.captureImage();
     }
 }

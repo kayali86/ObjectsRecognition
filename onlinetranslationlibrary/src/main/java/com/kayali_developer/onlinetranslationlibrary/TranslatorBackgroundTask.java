@@ -2,8 +2,6 @@ package com.kayali_developer.onlinetranslationlibrary;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -20,8 +18,9 @@ import java.net.URL;
 public class TranslatorBackgroundTask extends AsyncTask<String, Void, String> {
     //Declare Context
     Context ctx;
+
     //Set Context
-    TranslatorBackgroundTask(Context ctx){
+    TranslatorBackgroundTask(Context ctx) {
         this.ctx = ctx;
     }
 
@@ -58,18 +57,17 @@ public class TranslatorBackgroundTask extends AsyncTask<String, Void, String> {
 
             //Making result human readable
             String jsonString = jsonStringBuilder.toString().trim();
-            String translation ="";
-            TranslationResponse translationResponse = new TranslationResponse();
+            String translation = "";
+            TranslationResponse translationResponse;
             try {
                 translationResponse = new Gson().fromJson(jsonString, TranslationResponse.class);
-                if (translationResponse.getText().size() > 0){
+                if (translationResponse.getText().size() > 0) {
                     translation = translationResponse.getText().get(0);
                 }
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
             }
 
-            Log.d("Translation Result:", translation);
             return translation;
 
         } catch (MalformedURLException e) {

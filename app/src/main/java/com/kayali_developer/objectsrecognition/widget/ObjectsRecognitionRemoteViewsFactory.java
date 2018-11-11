@@ -13,13 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-
     private Context mContext;
+    private ArrayList<String> mWords;
+    private ArrayList<String> mTranslations;
 
-    ArrayList<String> mWords;
-    ArrayList<String> mTranslations;
-
-    public ObjectsRecognitionRemoteViewsFactory(Context mContext, ArrayList<String> words, ArrayList<String> translations) {
+    ObjectsRecognitionRemoteViewsFactory(Context mContext, ArrayList<String> words, ArrayList<String> translations) {
         this.mContext = mContext;
         try {
             Collections.reverse(words);
@@ -32,7 +30,7 @@ public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.
 
     }
 
-    private void loadAllObjectsFromDb(){
+    private void loadAllObjectsFromDb() {
         Intent loadIntent = new Intent(mContext, ObjectsWidgetLoadService.class);
         mContext.startService(loadIntent);
     }
@@ -61,11 +59,11 @@ public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.
 
     @Override
     public RemoteViews getViewAt(int position) {
-        if (mWords == null || mWords.size() == 0 || mTranslations == null || mTranslations.size() == 0) return null;
+        if (mWords == null || mWords.size() == 0 || mTranslations == null || mTranslations.size() == 0)
+            return null;
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
         views.setTextViewText(R.id.tv_word_widget, mWords.get(position));
         views.setTextViewText(R.id.tv_translation_widget, String.valueOf(mTranslations.get(position)));
-
 
         Intent searchIntent = new Intent();
         searchIntent.setAction(AppConstants.FROM_WIDGET_ACTION);
@@ -74,29 +72,6 @@ public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.
         searchIntent.putExtra(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY, mTranslations.get(position));
         searchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         views.setOnClickFillInIntent(R.id.widget_item_layout, searchIntent);
-
-
-/*
-
-        Intent searchIntent = new Intent(mContext, SearchResultActivity.class);
-        searchIntent.setAction(AppConstants.FROM_MAIN_ACTIVITY_ACTION);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.GOOGLE_CUSTOM_SEARCH_API_KEY, AppConstants.GOOGLE_SEARCH_API_KEY);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.CX_KEY, AppConstants.CX);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY, mTranslations.get(position));
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_item_layout, pendingIntent);
-
-
-        Intent searchIntent = new Intent(mContext, MainActivity.class);
-        searchIntent.setAction(AppConstants.FROM_MAIN_ACTIVITY_ACTION);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.GOOGLE_CUSTOM_SEARCH_API_KEY, AppConstants.GOOGLE_SEARCH_API_KEY);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.CX_KEY, AppConstants.CX);
-        searchIntent.putExtra(GoogleCustomSearchLibraryConstants.SEARCH_WORD_KEY, mTranslations.get(position));
-
-        views.setOnClickFillInIntent(R.id.widget_item_layout, searchIntent );
- */
-
-
 
         return views;
     }

@@ -2,7 +2,6 @@ package com.kayali_developer.onlinetranslationlibrary;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class Translator {
 
@@ -17,7 +16,6 @@ public class Translator {
                 e.printStackTrace();
             }
         }
-        Log.w("Translation Result", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + translationResult); // Logs the result in Android Monitor
         return translationResult;
     }
 }

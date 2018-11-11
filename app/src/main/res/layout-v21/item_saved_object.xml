@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/normal_margin"
+    android:layout_marginTop="@dimen/small_margin"
+    android:layout_marginEnd="@dimen/normal_margin"
+    android:layout_marginBottom="@dimen/small_margin"
+    android:background="@android:color/white"
+    android:elevation="@dimen/small_elevation">
+
+    <ImageView
+        android:id="@+id/iv_saved_object_image"
+        style="@style/object_image_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_delete_saved_object"
+        style="@style/delete_button_style"
+        app:layout_constraintBottom_toTopOf="@+id/tv_word_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_word"
+        app:layout_constraintTop_toBottomOf="@+id/tv_translation_label" />
+
+    <TextView
+        android:id="@+id/tv_word_label"
+        style="@style/language_label_view_style_detail"
+        android:paddingTop="@dimen/normal_margin"
+        android:text="@string/english_shortcut"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_saved_object_image" />
+
+    <TextView
+        android:id="@+id/tv_word"
+        style="@style/result_view_style_detail"
+        android:paddingTop="@dimen/normal_margin"
+        app:layout_constraintStart_toEndOf="@+id/tv_translation_label"
+        app:layout_constraintTop_toBottomOf="@+id/iv_saved_object_image" />
+
+    <TextView
+        android:id="@+id/tv_translation_label"
+        style="@style/language_label_view_style_detail"
+        android:text="@string/french_shortcut"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_word" />
+
+    <TextView
+        android:id="@+id/tv_translation"
+        style="@style/result_view_style_detail"
+        app:layout_constraintStart_toEndOf="@+id/tv_word_label"
+        app:layout_constraintTop_toBottomOf="@+id/tv_word_label" />
+
+</android.support.constraint.ConstraintLayout>
