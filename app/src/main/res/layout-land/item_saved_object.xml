@@ -10,6 +10,7 @@
     android:background="@android:color/white">
 
     <ImageView
+        android:contentDescription="@string/image_description"
         android:id="@+id/iv_saved_object_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,6 +18,7 @@
         style="@style/object_image_style_land" />
 
     <ImageView
+        android:contentDescription="@string/delete_button_description"
         android:id="@+id/iv_delete_saved_object"
         style="@style/delete_button_style_land"
         app:layout_constraintBottom_toTopOf="@+id/tv_word_label"

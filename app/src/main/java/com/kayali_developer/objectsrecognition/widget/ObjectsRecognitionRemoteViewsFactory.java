@@ -8,14 +8,16 @@ import android.widget.RemoteViewsService;
 import com.kayali_developer.googlecustomsearchlibrary.GoogleCustomSearchLibraryConstants;
 import com.kayali_developer.objectsrecognition.AppConstants;
 import com.kayali_developer.objectsrecognition.R;
+import com.kayali_developer.objectsrecognition.data.model.Object;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
-    private ArrayList<String> mWords;
-    private ArrayList<String> mTranslations;
+    private static ArrayList<String> mWords;
+    private static ArrayList<String> mTranslations;
 
     ObjectsRecognitionRemoteViewsFactory(Context mContext, ArrayList<String> words, ArrayList<String> translations) {
         this.mContext = mContext;
@@ -25,20 +27,29 @@ public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.mWords = words;
-        this.mTranslations = translations;
+        mWords = words;
+        mTranslations = translations;
 
     }
 
     private void loadAllObjectsFromDb() {
         Intent loadIntent = new Intent(mContext, ObjectsWidgetLoadService.class);
+        loadIntent.setAction(ObjectsWidgetLoadService.FROM_FACTORY_ACTION);
         mContext.startService(loadIntent);
     }
 
+    static void setWordsTranslations(List<Object> objects) {
+        mWords = new ArrayList<>();
+        mTranslations = new ArrayList<>();
+        for (Object object : objects) {
+            mWords.add(object.getWord());
+            mTranslations.add(object.getTranslation());
+        }
+    }
 
     @Override
     public void onCreate() {
-
+        loadAllObjectsFromDb();
     }
 
     @Override

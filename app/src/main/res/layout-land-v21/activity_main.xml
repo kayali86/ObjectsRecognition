@@ -37,13 +37,14 @@
     <com.wonderkiln.camerakit.CameraView
         android:id="@+id/camera_view"
         style="@style/camera_view_style_land"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adView"
         app:layout_constraintEnd_toStartOf="@+id/iv_thumbnail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_app_bar" />
 
     <ImageView
+        android:contentDescription="@string/thumbnail_description"
         android:id="@+id/iv_thumbnail"
         style="@style/thumbnail_style_land"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.design.widget.FloatingActionButton
+            android:contentDescription="@string/detect_float_button_description"
             android:id="@+id/btn_detect"
             style="@style/floating_button_style"
             android:src="@drawable/ic_camera_white_24dp"
@@ -116,9 +118,21 @@
             android:indeterminateTint="@color/colorAccent" />
     </FrameLayout>
 
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/small_margin"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/snack_bar_layout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -2,5 +2,6 @@
     <string name="app_name">Google Custom Search Library</string>
     <string name="loading">Loading...</string>
     <string name="search_result_image_description">Search result image</string>
+    <string name="detect_float_button_description">Detect button</string>
     <string name="no_search_results">No search results found!</string>
 </resources>

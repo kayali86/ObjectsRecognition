@@ -1,7 +1,9 @@
 package com.kayali_developer.objectsrecognition.activity;
 
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -20,6 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.kayali_developer.googlecustomsearchlibrary.GoogleCustomSearchLibraryConstants;
@@ -31,6 +36,7 @@ import com.kayali_developer.objectsrecognition.tensorflow.Classifier;
 import com.kayali_developer.objectsrecognition.tensorflow.TensorFlowImageClassifier;
 import com.kayali_developer.objectsrecognition.utilities.ImageUtils;
 import com.kayali_developer.objectsrecognition.viewmodel.MainViewModel;
+import com.kayali_developer.objectsrecognition.widget.ObjectsRecognitionWidget;
 import com.wonderkiln.camerakit.CameraKitError;
 import com.wonderkiln.camerakit.CameraKitEvent;
 import com.wonderkiln.camerakit.CameraKitEventListener;
@@ -76,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mainToolbar;
     @BindView(R.id.loading_indicator_container)
     FrameLayout loadingIndicatorContainer;
-
+    @BindView(R.id.adView)
+    AdView mAdView;
     private Classifier classifier;
     private Executor executor = Executors.newSingleThreadExecutor();
     private Object mCurrentObject = new Object();
@@ -94,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
         ObjectsRecognitionApplication application = (ObjectsRecognitionApplication) getApplication();
         mTracker = application.getDefaultTracker();
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         observeObject();
 
         mViewModel.translatedLive.observe(this, new Observer<Boolean>() {
@@ -278,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(mCurrentObject.getWord()) && !TextUtils.isEmpty(mCurrentObject.getTranslation()) && mCurrentObject.getImage() != null) {
                 long count = mViewModel.storeObject(mCurrentObject);
                 if (count > 0) {
+                    updateWidget();
                     showSnackBar(getString(R.string.object_saved));
 
                 } else {
@@ -295,6 +307,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWidget() {
+        Intent intent = new Intent(this, ObjectsRecognitionWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ObjectsRecognitionWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        sendBroadcast(intent);
     }
 
     @OnClick(R.id.btn_detect)

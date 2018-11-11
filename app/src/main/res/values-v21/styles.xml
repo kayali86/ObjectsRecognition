@@ -33,9 +33,8 @@
     <style name="floating_button_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/normal_margin</item>
+        <item name="android:layout_margin">@dimen/small_margin</item>
         <item name="android:layout_marginEnd">@dimen/small_margin</item>
-        <item name="android:layout_marginBottom">@dimen/small_margin</item>
     </style>
 
     <style name="language_label_view_style_land">
@@ -58,17 +57,17 @@
         <item name="android:background">@drawable/thumbnail_background</item>
         <item name="android:layout_height">@dimen/thumbnail_height_land</item>
         <item name="android:layout_width">@dimen/thumbnail_width_land</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/small_margin</item>
     </style>
 
     <style name="camera_view_style_land">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginStart">@dimen/small_margin</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/small_margin</item>
+        <item name="android:layout_marginBottom">@dimen/small_margin</item>
     </style>
 
     <style name="result_view_style">

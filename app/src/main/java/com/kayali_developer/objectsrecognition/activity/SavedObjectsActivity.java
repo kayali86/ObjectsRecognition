@@ -1,8 +1,10 @@
 package com.kayali_developer.objectsrecognition.activity;
 
 import android.app.AlertDialog;
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,7 +22,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.kayali_developer.objectsrecognition.R;
 import com.kayali_developer.objectsrecognition.adapter.SavedObjectsAdapter;
 import com.kayali_developer.objectsrecognition.data.model.Object;
 import com.kayali_developer.objectsrecognition.viewmodel.SavedObjectsViewModel;
+import com.kayali_developer.objectsrecognition.widget.ObjectsRecognitionWidget;
 
 import java.util.Collections;
 import java.util.List;
@@ -97,10 +99,10 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         mAdapter = new SavedObjectsAdapter(this);
         RecyclerView.LayoutManager layoutManager;
         int orientation = getResources().getConfiguration().orientation;
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && dm.widthPixels >= 600) {
+        int sw = getResources().getConfiguration().smallestScreenWidthDp;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && sw >= 600) {
             layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT_LAND);
-        }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || dm.widthPixels >= 600){
+        }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || sw >= 600){
             layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT);
         } else {
             layoutManager = new LinearLayoutManager(this);
@@ -156,6 +158,7 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
     private void deleteObject(long id) {
         int deletedObjectsCount = mViewModel.deleteObjectById(id);
         if (deletedObjectsCount > 0) {
+            updateWidget();
             int index = mAdapter.deleteObject(id);
             if (index >= 0) {
                 rvSavedObjects.removeViewAt(index);
@@ -171,12 +174,21 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int deletedObjectsCount = mViewModel.deleteAllObjects();
                         if (deletedObjectsCount > 0) {
+                            updateWidget();
                             mAdapter.clearAdapter();
                             showSnackBar(getString(R.string.all_objects_deleted));
                         }
                     }
                 };
         showUpdateConfirmDialog(discardButtonClickListener);
+    }
+
+    private void updateWidget() {
+        Intent intent = new Intent(this, ObjectsRecognitionWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ObjectsRecognitionWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        sendBroadcast(intent);
     }
 
     private void showSnackBar(String message) {

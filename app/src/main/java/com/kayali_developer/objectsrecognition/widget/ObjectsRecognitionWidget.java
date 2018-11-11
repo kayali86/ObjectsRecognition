@@ -66,6 +66,7 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
             mAppWidgetManager = appWidgetManager;
             mAppWidgetId = appWidgetId;
             Intent loadIntent = new Intent(context, ObjectsWidgetLoadService.class);
+            loadIntent.setAction(ObjectsWidgetLoadService.FROM_WIDGET_ACTION);
             context.startService(loadIntent);
         }
     }
@@ -86,6 +87,11 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
     }
 }
 

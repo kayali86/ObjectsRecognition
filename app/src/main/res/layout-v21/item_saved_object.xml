@@ -11,6 +11,7 @@
     android:elevation="@dimen/small_elevation">
 
     <ImageView
+        android:contentDescription="@string/image_description"
         android:id="@+id/iv_saved_object_image"
         style="@style/object_image_style"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:contentDescription="@string/delete_button_description"
         android:id="@+id/iv_delete_saved_object"
         style="@style/delete_button_style"
         app:layout_constraintBottom_toTopOf="@+id/tv_word_label"
