@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,10 +74,10 @@ public class SearchResultFragment extends Fragment {
                             mSearchResultAdapter.setSearchResultData(searchResponse);
                             RecyclerView.LayoutManager layoutManager;
                             int orientation = getResources().getConfiguration().orientation;
-                            DisplayMetrics dm = getResources().getDisplayMetrics();
-                            if (orientation == Configuration.ORIENTATION_LANDSCAPE && dm.widthPixels >= 600) {
+                            int sw = getResources().getConfiguration().smallestScreenWidthDp;
+                            if (orientation == Configuration.ORIENTATION_LANDSCAPE && sw >= 600) {
                                 layoutManager = new GridLayoutManager(getActivity(), 3);
-                            }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || dm.widthPixels >= 600){
+                            }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || sw >= 600){
                                 layoutManager = new GridLayoutManager(getActivity(), 2);
                             } else {
                                 layoutManager = new LinearLayoutManager(getActivity());

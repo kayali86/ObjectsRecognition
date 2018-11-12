@@ -102,7 +102,7 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
         int sw = getResources().getConfiguration().smallestScreenWidthDp;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE && sw >= 600) {
             layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT_LAND);
-        }else if (orientation == Configuration.ORIENTATION_LANDSCAPE || sw >= 600){
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE || sw >= 600) {
             layoutManager = new GridLayoutManager(this, AppConstants.SAVED_OBJECTS_GRID_LAYOUT_COLUMN_COUNT);
         } else {
             layoutManager = new LinearLayoutManager(this);
@@ -184,11 +184,12 @@ public class SavedObjectsActivity extends AppCompatActivity implements SavedObje
     }
 
     private void updateWidget() {
-        Intent intent = new Intent(this, ObjectsRecognitionWidget.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ObjectsRecognitionWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
-        sendBroadcast(intent);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, ObjectsRecognitionWidget.class));
+        //Trigger data update to handle the GridView widgets and force a data refresh
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_item_layout);
+        //Now update all widgets
+        ObjectsRecognitionWidget.updatePlantWidgets(this, appWidgetManager, appWidgetIds);
     }
 
     private void showSnackBar(String message) {

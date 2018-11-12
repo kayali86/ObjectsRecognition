@@ -1,27 +1,24 @@
 package com.kayali_developer.objectsrecognition.widget;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.widget.RemoteViews;
 
-import com.kayali_developer.objectsrecognition.AppConstants;
 import com.kayali_developer.objectsrecognition.R;
 import com.kayali_developer.objectsrecognition.activity.MainActivity;
 import com.kayali_developer.objectsrecognition.activity.SearchResultActivity;
-import com.kayali_developer.objectsrecognition.data.model.Object;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class ObjectsRecognitionWidget extends AppWidgetProvider {
-    private static Context mContext;
-    private static AppWidgetManager mAppWidgetManager;
-    private static int mAppWidgetId;
-    private static List<Object> sObjects = new ArrayList<>();
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -30,16 +27,13 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
         try {
             views = new RemoteViews(context.getPackageName(), R.layout.objects_recognition_widget);
 
+            Random random = new Random();
+            int randomNumber = random.nextInt();
             Intent intent = new Intent(context, WidgetService.class);
-            ArrayList<String> wordsList = new ArrayList<>();
-            ArrayList<String> translationsList = new ArrayList<>();
-            for (Object object : sObjects) {
-                wordsList.add(object.getWord());
-                translationsList.add(object.getTranslation());
-            }
-            intent.putStringArrayListExtra(AppConstants.ALL_SAVED_WORDS_KEY, wordsList);
-            intent.putStringArrayListExtra(AppConstants.ALL_SAVED_TRANSLATIONS_KEY, translationsList);
-
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.putExtra("random", randomNumber);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            views.setEmptyView(R.id.lv_widget_saved_objects, R.id.widget_empty_view);
             // Bind the remote adapter
             views.setRemoteAdapter(R.id.lv_widget_saved_objects, intent);
 
@@ -49,7 +43,7 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
 
             final Intent searchIntent = new Intent(context, SearchResultActivity.class);
             final PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 1, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.widget_item_layout, searchPendingIntent);
+            views.setPendingIntentTemplate(R.id.lv_widget_saved_objects, searchPendingIntent);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -60,24 +54,17 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
+        updatePlantWidgets(context, appWidgetManager, appWidgetIds);
+    }
+
+
+    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager,
+                                          int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            mContext = context;
-            mAppWidgetManager = appWidgetManager;
-            mAppWidgetId = appWidgetId;
-            Intent loadIntent = new Intent(context, ObjectsWidgetLoadService.class);
-            loadIntent.setAction(ObjectsWidgetLoadService.FROM_WIDGET_ACTION);
-            context.startService(loadIntent);
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
-    public static void updateWidget() {
-        updateAppWidget(mContext, mAppWidgetManager, mAppWidgetId);
-    }
-
-    public static void updateObjects(List<Object> objects) {
-        sObjects = objects;
-    }
 
     @Override
     public void onEnabled(Context context) {
@@ -89,9 +76,5 @@ public class ObjectsRecognitionWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-    }
 }
 

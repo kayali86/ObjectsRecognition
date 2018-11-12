@@ -29,5 +29,6 @@
     <string name="delete_all_objects_warning">Do you want to delete all saved Objects?</string>
     <string name="delete_all_btn">Delete all</string>
     <string name="back">Back</string>
+    <string name="widget_empty_view_image_description">No saved objects</string>
 
 </resources>

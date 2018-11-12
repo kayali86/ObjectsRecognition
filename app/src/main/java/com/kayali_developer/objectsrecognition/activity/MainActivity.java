@@ -310,11 +310,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateWidget() {
-        Intent intent = new Intent(this, ObjectsRecognitionWidget.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ObjectsRecognitionWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
-        sendBroadcast(intent);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, ObjectsRecognitionWidget.class));
+        //Trigger data update to handle the GridView widgets and force a data refresh
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_item_layout);
+        //Now update all widgets
+        ObjectsRecognitionWidget.updatePlantWidgets(this, appWidgetManager, appWidgetIds);
     }
 
     @OnClick(R.id.btn_detect)

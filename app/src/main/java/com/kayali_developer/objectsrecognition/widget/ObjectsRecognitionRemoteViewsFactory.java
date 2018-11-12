@@ -8,10 +8,10 @@ import android.widget.RemoteViewsService;
 import com.kayali_developer.googlecustomsearchlibrary.GoogleCustomSearchLibraryConstants;
 import com.kayali_developer.objectsrecognition.AppConstants;
 import com.kayali_developer.objectsrecognition.R;
+import com.kayali_developer.objectsrecognition.data.AppDatabase;
 import com.kayali_developer.objectsrecognition.data.model.Object;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -19,42 +19,29 @@ public class ObjectsRecognitionRemoteViewsFactory implements RemoteViewsService.
     private static ArrayList<String> mWords;
     private static ArrayList<String> mTranslations;
 
-    ObjectsRecognitionRemoteViewsFactory(Context mContext, ArrayList<String> words, ArrayList<String> translations) {
+    ObjectsRecognitionRemoteViewsFactory(Context mContext) {
         this.mContext = mContext;
-        try {
-            Collections.reverse(words);
-            Collections.reverse(translations);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mWords = words;
-        mTranslations = translations;
-
     }
 
-    private void loadAllObjectsFromDb() {
-        Intent loadIntent = new Intent(mContext, ObjectsWidgetLoadService.class);
-        loadIntent.setAction(ObjectsWidgetLoadService.FROM_FACTORY_ACTION);
-        mContext.startService(loadIntent);
+    @Override
+    public void onCreate() {
+        loadAllObjects();
     }
 
-    static void setWordsTranslations(List<Object> objects) {
+    @Override
+    public void onDataSetChanged() {
+        loadAllObjects();
+    }
+
+    private void loadAllObjects() {
+        AppDatabase mDb = AppDatabase.getInstance(mContext);
+        List<Object> objects = mDb.objectDao().loadAllObjects();
         mWords = new ArrayList<>();
         mTranslations = new ArrayList<>();
         for (Object object : objects) {
             mWords.add(object.getWord());
             mTranslations.add(object.getTranslation());
         }
-    }
-
-    @Override
-    public void onCreate() {
-        loadAllObjectsFromDb();
-    }
-
-    @Override
-    public void onDataSetChanged() {
-        loadAllObjectsFromDb();
     }
 
     @Override
